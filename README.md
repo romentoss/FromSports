@@ -1,2 +1,2 @@
 # FromSports
-This application is built with FastApi for the backend and React for the frontend. It allows you to input exercises, sets, repetitions, and weight. It also features a search function to group exercises, displaying them in groups and shows your progress over time with a graph of repetitions, sets, and weight.The database is local. Under development.💪
+This application is built with FastApi for the backend and React for the frontend. It allows you to input exercises, sets, repetitions, and weight. It also features a search function to group exercises, displaying them in groups and shows your progress over time with a graph of repetitions, sets, and weight.The database is local. Under development.💪 execute --> python -m uvicorn main:app 
