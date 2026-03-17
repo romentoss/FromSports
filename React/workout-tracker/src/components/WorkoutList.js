@@ -1,10 +1,23 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 function WorkoutList({workouts, setEditingWorkout, deleteWorkout}) {
+  const { t, i18n } = useTranslation();
+
+  const getLocale = (lang) => {
+    const locales = {
+      en: 'en-US',
+      fr: 'fr-FR',
+      pt: 'pt-BR',
+      es: 'es-ES'
+    };
+    return locales[lang] || 'es-ES';
+  };
+
   return (
     <>
       <h2 style={{color: '#6366f1', textAlign: 'center', marginBottom: 18}}>
-        Workout List
+        {t('workoutList')}
       </h2>
       <div
         className="workout-list"
@@ -19,23 +32,23 @@ function WorkoutList({workouts, setEditingWorkout, deleteWorkout}) {
         {workouts.map((w) => (
           <div key={w.id} className="workout-card">
             <p>
-              <b>Exercise:</b> {w.name}
+              <b>{t('exerciseLabel')}</b> {w.name}
             </p>
             <p>
-              <b>Weight:</b> {w.weight} kg
+              <b>{t('weightLabel')}</b> {w.weight} kg
             </p>
             <p>
-              <b>Reps:</b> {w.reps}
+              <b>{t('repsLabel')}</b> {w.reps}
             </p>
             <p>
-              <b>Sets:</b> {w.sets}
+              <b>{t('setsLabel')}</b> {w.sets}
             </p>
             <p>
-              <b>Date:</b> {new Date(w.date).toLocaleDateString('es-ES')}
+              <b>{t('dateLabel')}</b> {new Date(w.date).toLocaleDateString(getLocale(i18n.language))}
             </p>
             <div>
-              <button onClick={() => setEditingWorkout(w)}>Edit</button>
-              <button onClick={() => deleteWorkout(w.id)}>Delete</button>
+              <button onClick={() => setEditingWorkout(w)}>{t('edit')}</button>
+              <button onClick={() => deleteWorkout(w.id)}>{t('delete')}</button>
             </div>
           </div>
         ))}

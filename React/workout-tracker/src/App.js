@@ -1,6 +1,7 @@
 import React, {useState, useEffect, Suspense} from 'react';
 import './App.css';
 import WorkoutList from './components/WorkoutList';
+import { useTranslation } from 'react-i18next';
 const WorkoutChart = React.lazy(() => import('./components/WorkoutChart'));
 const WorkoutBarChart = React.lazy(
   () => import('./components/WorkoutBarChart'),
@@ -11,6 +12,17 @@ const WorkoutPieChart = React.lazy(
 
 //index
 function App() {
+  const { t, i18n } = useTranslation();
+
+  const getLocale = (lang) => {
+    const locales = {
+      en: 'en-US',
+      fr: 'fr-FR',
+      pt: 'pt-BR',
+      es: 'es-ES'
+    };
+    return locales[lang] || 'es-ES';
+  };
   const [chartType, setChartType] = useState('line'); // "line", "bar", "pie"
   const [workouts, setWorkouts] = useState([]);
   const [exercise, setExercise] = useState('');
@@ -41,7 +53,7 @@ function App() {
           .filter((w) => w.date && w.weight != null)
           .sort((a, b) => new Date(a.date) - new Date(b.date))
           .map((w) => ({
-            date: new Date(w.date).toLocaleDateString('es-ES', {
+            date: new Date(w.date).toLocaleDateString(getLocale(i18n.language), {
               day: '2-digit',
               month: '2-digit',
               year: 'numeric',
@@ -55,7 +67,7 @@ function App() {
         setChartData([]);
       }
     } catch (err) {
-      setFormErrors({general: 'Error al cargar workouts.'});
+      setFormErrors({general: t('errorLoad')});
     } finally {
       setLoading(false);
     }
@@ -70,13 +82,13 @@ function App() {
   const validateForm = () => {
     const errors = {};
     if (!exercise.trim())
-      errors.exercise = 'El nombre del ejercicio es obligatorio.';
+      errors.exercise = t('exerciseRequired');
     if (sets === '' || isNaN(Number(sets)) || Number(sets) <= 0)
-      errors.sets = 'Series debe ser un número mayor que 0.';
+      errors.sets = t('setsRequired');
     if (reps === '' || isNaN(Number(reps)) || Number(reps) <= 0)
-      errors.reps = 'Repeticiones debe ser un número mayor que 0.';
+      errors.reps = t('repsRequired');
     if (weight === '' || isNaN(Number(weight)) || Number(weight) < 0)
-      errors.weight = 'Peso debe ser un número positivo.';
+      errors.weight = t('weightRequired');
     return errors;
   };
 
@@ -155,15 +167,15 @@ function App() {
       setFormTouched(false);
       setSuccessMsg(
         editingId
-          ? '¡Workout editado con éxito!'
-          : '¡Workout agregado con éxito!',
+          ? t('successEdit')
+          : t('successAdd'),
       );
       setSuccessTimestamp(Date.now());
 
       fetchWorkouts();
     } catch (error) {
       setSuccessMsg('');
-      setFormErrors({general: 'Error al guardar workout. Intenta de nuevo.'});
+      setFormErrors({general: t('errorSave')});
       setErrorTimestamp(Date.now());
       console.error(error);
     } finally {
@@ -187,7 +199,7 @@ function App() {
     setSuccessTimestamp(null);
     setErrorTimestamp(null);
     const confirmDelete = window.confirm(
-      '¿Seguro que quieres eliminar este workout? Esta acción no se puede deshacer.',
+      t('confirmDelete'),
     );
     if (!confirmDelete) return;
     try {
@@ -196,10 +208,10 @@ function App() {
       });
       if (!res.ok) throw new Error('Error al eliminar workout');
       setWorkouts(workouts.filter((w) => w.id !== id));
-      setSuccessMsg('¡Workout eliminado con éxito!');
+      setSuccessMsg(t('successDelete'));
       setSuccessTimestamp(Date.now());
     } catch (error) {
-      setFormErrors({general: 'Error al eliminar workout. Intenta de nuevo.'});
+      setFormErrors({general: t('errorDelete')});
       setSuccessMsg('');
       setErrorTimestamp(Date.now());
       console.error(error);
@@ -229,23 +241,36 @@ function App() {
   return (
     <div className="page-container">
       <div className="main-container">
-        <h1>FromSports</h1>
+        <h1>{t('title')}</h1>
+
+        <div style={{textAlign: 'center', marginBottom: 20}}>
+          <select
+            value={i18n.language}
+            onChange={(e) => i18n.changeLanguage(e.target.value)}
+            className="language-selector"
+          >
+            <option value="es">Español</option>
+            <option value="en">English</option>
+            <option value="fr">Français</option>
+            <option value="pt">Português</option>
+          </select>
+        </div>
 
         <div className="search-bar">
           <input
             type="text"
-            placeholder="Ejemplo: Bench Press"
+            placeholder={t('searchPlaceholder')}
             value={searchExercise}
             onChange={(e) => setSearchExercise(e.target.value)}
           />
-          <button onClick={() => fetchWorkouts(searchExercise)}>Buscar</button>
+          <button onClick={() => fetchWorkouts(searchExercise)}>{t('search')}</button>
           <button
             onClick={() => {
               setSearchExercise('');
               fetchWorkouts();
             }}
           >
-            Mostrar todos
+            {t('showAll')}
           </button>
         </div>
 
@@ -260,7 +285,7 @@ function App() {
           >
             <input
               type="text"
-              placeholder="Ejercicio"
+              placeholder={t('exercise')}
               value={exercise}
               onChange={(e) => setExercise(e.target.value)}
               className={formErrors.exercise ? 'input-error' : ''}
@@ -279,7 +304,7 @@ function App() {
           >
             <input
               type="number"
-              placeholder="Series"
+              placeholder={t('sets')}
               value={sets}
               onChange={(e) => setSets(e.target.value)}
               min="1"
@@ -299,7 +324,7 @@ function App() {
           >
             <input
               type="number"
-              placeholder="Repeticiones"
+              placeholder={t('reps')}
               value={reps}
               onChange={(e) => setReps(e.target.value)}
               min="1"
@@ -319,7 +344,7 @@ function App() {
           >
             <input
               type="number"
-              placeholder="Peso (kg)"
+              placeholder={t('weight')}
               value={weight}
               onChange={(e) => setWeight(e.target.value)}
               min="0"
@@ -335,10 +360,10 @@ function App() {
             disabled={loading || Object.keys(formErrors).length > 0}
           >
             {loading
-              ? 'Guardando...'
+              ? t('saving')
               : editingId
-                ? 'Guardar cambios'
-                : 'Agregar'}
+                ? t('saveChanges')
+                : t('add')}
           </button>
           {editingId && (
             <button
@@ -353,7 +378,7 @@ function App() {
                 setSuccessMsg('');
               }}
             >
-              Cancelar
+              {t('cancel')}
             </button>
           )}
           {formErrors.general && (
@@ -367,7 +392,7 @@ function App() {
             <h3
               style={{textAlign: 'center', color: '#6366f1', marginBottom: 10}}
             >
-              Gráfico de peso, series y repeticiones
+              {t('chartTitle')}
             </h3>
             <div
               style={{
@@ -389,7 +414,7 @@ function App() {
                   cursor: 'pointer',
                 }}
               >
-                Líneas
+                {t('lines')}
               </button>
               <button
                 onClick={() => setChartType('bar')}
@@ -403,7 +428,7 @@ function App() {
                   cursor: 'pointer',
                 }}
               >
-                Barras
+                {t('bars')}
               </button>
               <button
                 onClick={() => setChartType('pie')}
@@ -417,7 +442,7 @@ function App() {
                   cursor: 'pointer',
                 }}
               >
-                Queso
+                {t('pie')}
               </button>
             </div>
             <Suspense
@@ -433,7 +458,7 @@ function App() {
                 >
                   <div className="loader" style={{marginBottom: 8}}></div>
                   <span style={{color: '#6366f1', fontWeight: 600}}>
-                    Cargando gráfico...
+                    {t('loadingChart')}
                   </span>
                 </div>
               }
@@ -449,7 +474,7 @@ function App() {
           <div className="loader-container">
             <div className="loader"></div>
             <span style={{color: '#6366f1', fontWeight: 600, marginLeft: 8}}>
-              Cargando...
+              {t('loading')}
             </span>
           </div>
         )}
