@@ -1,50 +1,75 @@
 # Chatbot con IA para Ejercicios
 
-## Configuración de la API de IA
+## ⚠️ IMPORTANTE: Configuración Segura
 
-Para activar respuestas inteligentes con IA, necesitas configurar una API. Se recomienda usar OpenAI:
+**La API key de OpenRouter debe configurarse en el BACKEND, no en el frontend.** Esto es por seguridad - las variables de entorno del frontend son visibles en el navegador.
 
-### 1. Obtén tu API Key de OpenAI
+## Configuración del Backend (Obligatoria para IA)
 
-- Ve a https://platform.openai.com/
-- Crea una cuenta y obtén tu API key
-
-### 2. Configura las variables de entorno
-
-Crea un archivo `.env` en la raíz del proyecto React:
-
-```env
-REACT_APP_OPENAI_API_KEY=tu_api_key_aquí
-```
-
-### 3. Instala dependencias adicionales (opcional)
+### 1. Instalar dependencias del backend
 
 ```bash
-npm install dotenv
+cd fastApi+SQLalquemy
+pip install -r requirements.txt
 ```
 
-### 4. El chatbot funcionará automáticamente
+### 2. Configurar variables de entorno
 
-Una vez configurada la API key, el chatbot intentará usar IA primero, y si falla, usará respuestas predefinidas como fallback.
+En la carpeta `fastApi+SQLalquemy`, copia `.env.example` como `.env`:
+
+```bash
+cp .env.example .env
+```
+
+Edita el archivo `.env` y agrega tu API key real:
+
+```env
+OPENROUTER_API_KEY=tu_api_key_real_de_openrouter_aqui
+```
+
+### 3. Obtén tu API Key de OpenRouter
+
+- Ve a https://openrouter.ai/keys
+- Crea una cuenta gratuita
+- Genera tu API key
+- **Nunca subas este archivo .env al repositorio**
+
+## Cómo funciona
+
+1. **Frontend**: Envía preguntas al backend (`/chatbot`)
+2. **Backend**: Hace llamadas seguras a OpenRouter con la API key
+3. **Respuesta**: El backend devuelve la respuesta de IA al frontend
+4. **Fallback**: Si no hay API key, usa respuestas predefinidas
+
+## Inicio de la aplicación
+
+### Backend (Terminal 1)
+
+```bash
+cd fastApi+SQLalquemy
+python main.py
+# o
+uvicorn main:app --reload
+```
+
+### Frontend (Terminal 2)
+
+```bash
+cd React/workout-tracker
+npm start
+```
 
 ## Funcionalidades del Chatbot
 
-- **Respuestas inteligentes**: Explica ejercicios con detalle usando IA
-- **Multidioma**: Responde en el idioma seleccionado por el usuario
-- **Categorías**: Puede listar ejercicios por categoría (piernas, espalda, pecho)
-- **Información detallada**: Da consejos sobre técnica, músculos y recomendaciones
-- **Interfaz intuitiva**: Diseño moderno con indicador de "escribiendo"
+- **Respuestas inteligentes**: Claude-3-Haiku explica ejercicios con detalle
+- **Multidioma**: Responde en español, inglés, francés, portugués
+- **Categorías**: Lista ejercicios por grupos musculares
+- **Información detallada**: Técnica, equipos, músculos, consejos
+- **Fallback robusto**: Funciona sin API key usando respuestas locales
 
-## Cómo usar
+## Seguridad
 
-1. Ve a la página de tabla de ejercicios
-2. Haz clic en el botón flotante del chatbot (💬)
-3. Pregunta sobre cualquier ejercicio o categoría
-4. El chatbot responderá automáticamente
-
-## Ejemplos de preguntas
-
-- "¿Cómo se hace el squat correctamente?"
-- "¿Qué ejercicios hay para espalda?"
-- "Explícame el bench press"
-- "Recomiéndame ejercicios para piernas"
+✅ **API key segura**: Nunca expuesta en el navegador  
+✅ **Backend protegido**: Llamadas server-to-server  
+✅ **Variables de entorno**: No incluidas en el bundle del frontend  
+✅ **Fallback automático**: Funciona sin configuración de IA

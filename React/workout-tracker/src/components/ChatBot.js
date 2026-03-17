@@ -145,60 +145,37 @@ function ChatBot({exercises}) {
   };
 
   // Función para obtener respuesta de IA
+  // Función para obtener respuesta de IA
   const getAIResponse = async (userInput, exercises) => {
-    // Aquí puedes integrar con OpenAI, Anthropic, o cualquier API de IA
-    // Por ahora, simularemos una respuesta inteligente
-
-    const exerciseNames = exercises.map((ex) => ex.name).join(', ');
-    const categories = ['legs', 'back', 'chest'];
-
-    // Crear un prompt inteligente
-    const prompt = `Eres un entrenador personal experto. El usuario pregunta: "${userInput}"
-
-Ejercicios disponibles: ${exerciseNames}
-Categorías: piernas (legs), espalda (back), pecho (chest)
-
-Responde de manera útil y motivadora. Si preguntan sobre un ejercicio específico, da detalles sobre técnica, músculos trabajados y consejos.
-Si preguntan sobre categorías, recomienda ejercicios apropiados.
-Mantén la respuesta concisa pero informativa.
-
-IMPORTANTE: Responde en el idioma del usuario (${i18n.language === 'es' ? 'español' : i18n.language === 'en' ? 'inglés' : i18n.language === 'fr' ? 'francés' : i18n.language === 'pt' ? 'portugués' : 'español'}).`;
-
-    // Simulación de llamada a API de IA (reemplaza con tu API real)
     try {
-      // Código real para OpenAI:
-      /*
-      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      // Llamada al backend en lugar de OpenRouter directamente
+      const response = await fetch('http://localhost:8000/chatbot', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages: [
-            {
-              role: 'system',
-              content: 'Eres un entrenador personal experto que ayuda con ejercicios de gimnasio.'
-            },
-            {
-              role: 'user',
-              content: prompt
-            }
-          ],
-          max_tokens: 300,
-          temperature: 0.7
-        })
+          message: userInput,
+          language: i18n.language || 'es',
+        }),
       });
 
-      const data = await response.json();
-      return data.choices[0].message.content;
-      */
+      if (!response.ok) {
+        console.log('Backend API error:', response.status, response.statusText);
+        return null;
+      }
 
-      // Por ahora, devolver null para usar las respuestas predefinidas
-      return null;
+      const data = await response.json();
+
+      // Si el backend indica que use fallback, devolver null
+      if (data.source === 'fallback' || data.source === 'error') {
+        console.log('Backend fallback:', data.response);
+        return null;
+      }
+
+      return data.response;
     } catch (error) {
-      console.error('Error calling AI API:', error);
+      console.error('Error calling backend API:', error);
       return null;
     }
   };

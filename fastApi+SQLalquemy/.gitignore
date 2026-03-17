@@ -2,3 +2,7 @@
 
 # dependencies
 sports.db
+
+# env files (MUY IMPORTANTE)
+.env
+.env.*

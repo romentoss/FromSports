@@ -26,3 +26,12 @@ class Workout(WorkoutBase):
 
     class Config:
         model_config = {"from_attributes": True}
+
+# Esquemas para el chatbot
+class ChatbotRequest(BaseModel):
+    message: str
+    language: str = "es"  # Idioma del usuario (es, en, fr, pt)
+
+class ChatbotResponse(BaseModel):
+    response: str
+    source: str  # "ai" o "fallback"
