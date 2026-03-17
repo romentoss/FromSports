@@ -1,5 +1,5 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
+import {initReactI18next} from 'react-i18next';
 
 // the translations
 // (tip: move them in a JSON file and import them,
@@ -11,17 +11,17 @@ import es from './locales/es.json';
 
 const resources = {
   en: {
-    translation: en
+    translation: en,
   },
   fr: {
-    translation: fr
+    translation: fr,
   },
   pt: {
-    translation: pt
+    translation: pt,
   },
   es: {
-    translation: es
-  }
+    translation: es,
+  },
 };
 
 i18n
@@ -36,8 +36,8 @@ i18n
     // if you're using a language detector, do not define the lng option
 
     interpolation: {
-      escapeValue: false // react already does escaping
-    }
+      escapeValue: false, // react already does escaping
+    },
   });
 
 export default i18n;

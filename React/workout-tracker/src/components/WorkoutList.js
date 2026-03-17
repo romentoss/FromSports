@@ -1,15 +1,15 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 function WorkoutList({workouts, setEditingWorkout, deleteWorkout}) {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
 
   const getLocale = (lang) => {
     const locales = {
       en: 'en-US',
       fr: 'fr-FR',
       pt: 'pt-BR',
-      es: 'es-ES'
+      es: 'es-ES',
     };
     return locales[lang] || 'es-ES';
   };
@@ -44,7 +44,8 @@ function WorkoutList({workouts, setEditingWorkout, deleteWorkout}) {
               <b>{t('setsLabel')}</b> {w.sets}
             </p>
             <p>
-              <b>{t('dateLabel')}</b> {new Date(w.date).toLocaleDateString(getLocale(i18n.language))}
+              <b>{t('dateLabel')}</b>{' '}
+              {new Date(w.date).toLocaleDateString(getLocale(i18n.language))}
             </p>
             <div>
               <button onClick={() => setEditingWorkout(w)}>{t('edit')}</button>
