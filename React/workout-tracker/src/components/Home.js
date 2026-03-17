@@ -1,25 +1,21 @@
 import React, {useState, useEffect, Suspense} from 'react';
 import '../App.css';
 import WorkoutList from './WorkoutList';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
+import {Link} from 'react-router-dom';
 const WorkoutChart = React.lazy(() => import('./WorkoutChart'));
-const WorkoutBarChart = React.lazy(
-  () => import('./WorkoutBarChart'),
-);
-const WorkoutPieChart = React.lazy(
-  () => import('./WorkoutPieChart'),
-);
+const WorkoutBarChart = React.lazy(() => import('./WorkoutBarChart'));
+const WorkoutPieChart = React.lazy(() => import('./WorkoutPieChart'));
 
 function Home() {
-  const { t, i18n } = useTranslation();
+  const {t, i18n} = useTranslation();
 
   const getLocale = (lang) => {
     const locales = {
       en: 'en-US',
       fr: 'fr-FR',
       pt: 'pt-BR',
-      es: 'es-ES'
+      es: 'es-ES',
     };
     return locales[lang] || 'es-ES';
   };
@@ -54,11 +50,14 @@ function Home() {
           .filter((w) => w.date && w.weight != null)
           .sort((a, b) => new Date(a.date) - new Date(b.date))
           .map((w) => ({
-            date: new Date(w.date).toLocaleDateString(getLocale(i18n.language), {
-              day: '2-digit',
-              month: '2-digit',
-              year: 'numeric',
-            }),
+            date: new Date(w.date).toLocaleDateString(
+              getLocale(i18n.language),
+              {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              },
+            ),
             weight: w.weight,
             sets: w.sets,
             reps: w.reps,
@@ -82,8 +81,7 @@ function Home() {
   // Validación de formulario
   const validateForm = () => {
     const errors = {};
-    if (!exercise.trim())
-      errors.exercise = t('exerciseRequired');
+    if (!exercise.trim()) errors.exercise = t('exerciseRequired');
     if (sets === '' || isNaN(Number(sets)) || Number(sets) <= 0)
       errors.sets = t('setsRequired');
     if (reps === '' || isNaN(Number(reps)) || Number(reps) <= 0)
@@ -166,11 +164,7 @@ function Home() {
       setEditingId(null);
       setFormErrors({});
       setFormTouched(false);
-      setSuccessMsg(
-        editingId
-          ? t('successEdit')
-          : t('successAdd'),
-      );
+      setSuccessMsg(editingId ? t('successEdit') : t('successAdd'));
       setSuccessTimestamp(Date.now());
 
       fetchWorkouts();
@@ -199,9 +193,7 @@ function Home() {
     setFormErrors({});
     setSuccessTimestamp(null);
     setErrorTimestamp(null);
-    const confirmDelete = window.confirm(
-      t('confirmDelete'),
-    );
+    const confirmDelete = window.confirm(t('confirmDelete'));
     if (!confirmDelete) return;
     try {
       const res = await fetch(`http://127.0.0.1:8000/workouts/${id}`, {
@@ -259,15 +251,32 @@ function Home() {
         </div>
 
         <div style={{textAlign: 'center', marginBottom: 20}}>
-          <Link to="/exercises" style={{color: '#6366f1', textDecoration: 'none', fontWeight: 'bold', marginRight: 20}}>
+          <Link
+            to="/exercises"
+            style={{
+              color: '#6366f1',
+              textDecoration: 'none',
+              fontWeight: 'bold',
+              marginRight: 20,
+            }}
+          >
             {t('exerciseTable')}
           </Link>
         </div>
 
         {/* Navegación */}
-        <nav style={{ marginBottom: '20px' }}>
-          <span style={{ color: '#6366f1', fontWeight: 'bold' }}>{t('home')}</span>
-          <Link to="/exercises" style={{ marginLeft: '20px', color: '#6366f1', textDecoration: 'none' }}>
+        <nav style={{marginBottom: '20px'}}>
+          <span style={{color: '#6366f1', fontWeight: 'bold'}}>
+            {t('home')}
+          </span>
+          <Link
+            to="/exercises"
+            style={{
+              marginLeft: '20px',
+              color: '#6366f1',
+              textDecoration: 'none',
+            }}
+          >
             {t('exerciseTable')}
           </Link>
         </nav>
@@ -279,7 +288,9 @@ function Home() {
             value={searchExercise}
             onChange={(e) => setSearchExercise(e.target.value)}
           />
-          <button onClick={() => fetchWorkouts(searchExercise)}>{t('search')}</button>
+          <button onClick={() => fetchWorkouts(searchExercise)}>
+            {t('search')}
+          </button>
           <button
             onClick={() => {
               setSearchExercise('');
@@ -375,11 +386,7 @@ function Home() {
             type="submit"
             disabled={loading || Object.keys(formErrors).length > 0}
           >
-            {loading
-              ? t('saving')
-              : editingId
-                ? t('saveChanges')
-                : t('add')}
+            {loading ? t('saving') : editingId ? t('saveChanges') : t('add')}
           </button>
           {editingId && (
             <button

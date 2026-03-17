@@ -1,6 +1,6 @@
-import React, { Suspense } from 'react';
+import React, {Suspense} from 'react';
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import {Routes, Route} from 'react-router-dom';
 const Home = React.lazy(() => import('./components/Home'));
 const ExerciseTable = React.lazy(() => import('./components/ExerciseTable'));
 
