@@ -39,16 +39,25 @@ function ChatBot({exercises}) {
 
     // Simular respuesta del bot (aquí iría la lógica de IA)
     setTimeout(
-      () => {
-        const botResponse = generateBotResponse(inputMessage, exercises);
-        setMessages((prev) => [
-          ...prev,
-          {
-            text: botResponse,
-            sender: 'bot',
-            timestamp: new Date(),
-          },
-        ]);
+      async () => {
+        try {
+          const botResponse = await generateBotResponse(
+            inputMessage,
+            exercises,
+          );
+
+          setMessages((prev) => [
+            ...prev,
+            {
+              text: botResponse,
+              sender: 'bot',
+              timestamp: new Date(),
+            },
+          ]);
+        } catch (error) {
+          console.error(error);
+        }
+
         setIsTyping(false);
       },
       1000 + Math.random() * 2000,
@@ -350,6 +359,7 @@ function ChatBot({exercises}) {
                 disabled={isTyping}
               />
               <button
+                type="button"
                 onClick={handleSendMessage}
                 disabled={!inputMessage.trim() || isTyping}
                 style={{
